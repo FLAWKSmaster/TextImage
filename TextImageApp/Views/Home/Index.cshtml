@@ -1,0 +1,43 @@
+﻿@model TextImageApp.Models.TextModel
+@{
+    ViewBag.Title = "Index";
+}
+<section>
+    <figure></figure>
+    <p>Загрузка файлов</p>
+    <p><small>Перетащите ваши файлы в эту область!</small></p>
+    <input type="file" multiple="multiple" accept="image/x-png,image/jpeg">
+</section>
+
+<center>
+    <div>
+        
+        <div>
+            <span>@Html.LabelFor(x => x.TextOnImage)</span>
+            <span>@Html.TextBoxFor(m => m.TextOnImage)</span>
+            <span><button type="submit" value="Send" name="TextOnImage" class="btn btn-info">Отправить1</button></span>
+        </div>
+    </div>
+    
+    <div class="row">
+        @using (Html.BeginForm("/Index", "TextModel", FormMethod.Post))
+        {/*
+            <div class="form-group">
+                <span><label for="TextInput">Entry text</label></span>
+                <input id="TextInput" type="text" name="TextOnImage" value="@Model.TextInput" />
+            </div>
+          <div class="form-group">
+                <label for="TextInput">Entry text</label>
+                <input id="TextOutput" type="text" name="TextOutput" value="@Model.TextOutput" />
+            </div>
+            <button type="submit" value="Send" name="TextOnImage" class="btn btn-info">Отправить</button>
+        */}
+    
+    </div>
+</center>
+<div class="progress">
+    <div class="progress-bar"></div>
+    <div class="progress-value">0 %</div>
+</div>
+<div class="error"></div>
+<div class="images"></div>
