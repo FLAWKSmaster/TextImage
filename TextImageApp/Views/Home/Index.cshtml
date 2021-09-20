@@ -1,43 +1,82 @@
-﻿@model TextImageApp.Models.TextModel
+﻿
 @{
     ViewBag.Title = "Index";
 }
-<section>
-    <figure></figure>
-    <p>Загрузка файлов</p>
-    <p><small>Перетащите ваши файлы в эту область!</small></p>
-    <input type="file" multiple="multiple" accept="image/x-png,image/jpeg">
-</section>
+
 
 <center>
     <div>
-        
-        <div>
-            <span>@Html.LabelFor(x => x.TextOnImage)</span>
-            <span>@Html.TextBoxFor(m => m.TextOnImage)</span>
-            <span><button type="submit" value="Send" name="TextOnImage" class="btn btn-info">Отправить1</button></span>
+    <ul class="list1a">
+        <li>
+            Введите текст, который хотите нанести на картинку 
+            и сохраните его, нажав <mark>Set my text!</mark>
+        </li>
+        <li>Перетащите одно или несколько изображений</li>
+        <li>Выберите конкретное изображение, нажав на него. 
+            В окне просмотра нажмите ПКМ>Сохранить изображение как...
+        >Сохраните изображение</li>
+        <li>Сохраните все получившиеся изображения в архиве 
+            <mark>Pack it all into ZIP</mark>><mark>Download ZIP</mark></li>
+    </ul>
+    </div>
+    <div>
+        <div class="row">
+            <form action="/Home/Index" method="post">
+                <div>
+                    <input type="text" name="textOut" placeholder="My text..." style="padding: 10px; margin: 10px 0; border: 0;
+                                                                                      border-bottom: 1px solid #eee; box-shadow: 0 0 15px 4px rgba(0,0,0,0.16);
+                                                                                      border-radius: 10px; width:100%" />
+                </div>
+                <div>
+                    <button type="submit" value="Apply text" style=" padding: 10px;margin: 10px 0; border: none; background-color: #3F51B5; color: #fff;
+                                                                     font-weight: 600; border-radius: 5px; width: 100%;">
+                        Set my text!
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-    
-    <div class="row">
-        @using (Html.BeginForm("/Index", "TextModel", FormMethod.Post))
-        {/*
-            <div class="form-group">
-                <span><label for="TextInput">Entry text</label></span>
-                <input id="TextInput" type="text" name="TextOnImage" value="@Model.TextInput" />
-            </div>
-          <div class="form-group">
-                <label for="TextInput">Entry text</label>
-                <input id="TextOutput" type="text" name="TextOutput" value="@Model.TextOutput" />
-            </div>
-            <button type="submit" value="Send" name="TextOnImage" class="btn btn-info">Отправить</button>
-        */}
-    
-    </div>
 </center>
+
+<section>
+    <figure></figure>
+    <p>Выбрать изображения</p>
+    <p><small>Перетащите Ваши файлы размером не более 2мб в эту область</small></p>
+    <p></p>>
+    <input type="file" multiple="multiple" accept="image/x-png,image/jpeg">
+</section>
+
 <div class="progress">
     <div class="progress-bar"></div>
     <div class="progress-value">0 %</div>
 </div>
 <div class="error"></div>
 <div class="images"></div>
+
+@using (Html.BeginForm("ZipCrutch", "Home"))
+{
+    <div>
+        <button type="submit" name="ZipCrutchUpdate" value="Apply zip" style=" padding: 10px;margin: 10px 0; border: none; background-color: #3F51B5; color: #fff;
+                                                                         font-weight: 600; border-radius: 5px; width: 100%; ">
+            Pack it all into ZIP-archive!
+        </button>
+    </div>
+
+}
+
+@using (Html.BeginForm("Download", "Home"))
+{
+    foreach (string file in ViewBag.Files)
+    {
+        <input class="files" type="checkbox" name="files" value="@file" checked />
+        //@:&nbsp;
+        //@Path.GetFileNameWithoutExtension(file)
+        <br class="files" />
+    }
+    <div>
+        <button style=" padding: 10px;margin: 10px 0; border: none; background-color: #3F51B5; color: #fff;
+                        font-weight: 600; border-radius: 5px; width: 100%;">
+            Download Zip-Archive
+        </button>
+    </div>
+}
