@@ -56,13 +56,13 @@ namespace UploadFiles.Controllers
                     sw.WriteLineAsync(textOut);
                 }  
             }
-            catch (Exception e)
+            catch 
             {
-                
+                goto ExceptRedir;
             }
             var temp = Server.MapPath("~/uploads");
             Directory.EnumerateFiles(temp).ToList().ForEach(f => System.IO.File.Delete(f));
-
+            ExceptRedir:
             return Redirect("/Home/Index");
         }
 
