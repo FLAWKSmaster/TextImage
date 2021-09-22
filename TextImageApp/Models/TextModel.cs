@@ -8,10 +8,6 @@ namespace TextImageApp.Models
 {
     public class TextModel
     {
-        public string TextInput { get; set; }
-        public string TextOutput { get; set; }
-
-        [DisplayName("TextOnImage")]
-        public string TextOnImage { get; set; }
+        //тут были модели, но они отсюда съехали. Пока оставить
     }
 }

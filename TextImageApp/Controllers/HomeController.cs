@@ -6,6 +6,10 @@ using System.Collections.Generic;
 using System.IO;
 using TextImageApp.Controllers;
 using TextImageApp.Models;
+using System.Threading.Tasks;
+using TextImageApp;
+using System.IO.Compression;
+using System.Web.UI;
 
 namespace UploadFiles.Controllers
 {
@@ -13,49 +17,83 @@ namespace UploadFiles.Controllers
     {
         public ActionResult Index()
         {
+            ViewBag.Files = Directory.EnumerateFiles(Server.MapPath("~/uploads"));
             return View();
-            //return View(new TextModel());
-        }
-
-
-        //string textOnImage;
-
-
-        /*[HttpPost]
-        public ActionResult Index(TextModel txt, string TextOut)
-        {
-            txt.TextInput = txt.TextOutput;
-            textOnImage = txt.TextOutput;
-            return View(txt);
-        }*/
-        string textOnImage;
-
-        public string txtimg(string TxtImg)
-        {
-            return TxtImg;
         }
 
         [HttpPost]
-        public string Index(TextModel txt)
+        public FileResult Download(List<string> files)
         {
-            textOnImage = "abobo";
-            txtimg(txt.TextOnImage);
-            //textOnImage = txt.TextOnImage;
-            //return txt.TextOnImage;
-            Aboba = txt.TextOnImage;
-            return Aboba;
+            var archive = Server.MapPath("~/archive.zip");
+            var temp = Server.MapPath("~/temp");
+
+            // очистить все существующие архивы
+            if (System.IO.File.Exists(archive))
+            {
+                System.IO.File.Delete(archive);
+            }
+            // очистить папку temp
+            Directory.EnumerateFiles(temp).ToList().ForEach(f => System.IO.File.Delete(f));
+
+            // скопировать выбранные чекбоксом файлы в папку temp
+            files.ForEach(f => System.IO.File.Copy(f, Path.Combine(temp, Path.GetFileName(f))));
+
+            // создать новый архив
+            ZipFile.CreateFromDirectory(temp, archive);
+
+            return File(archive, "application/zip", "archive.zip");
         }
 
-        public string Aboba { get; set; }
+        // Заполнение строки в файле TEXTON.txt
+        [HttpPost]
+        public ActionResult Index(string textOut)
+        {
+            string writePath = "/TEXTON.txt";
+            try
+            {
+                using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding.Default))
+                {
+                    sw.WriteLineAsync(textOut);
+                }  
+            }
+            catch 
+            {
+                goto ExceptRedir;
+            }
+            var temp = Server.MapPath("~/uploads");
+            Directory.EnumerateFiles(temp).ToList().ForEach(f => System.IO.File.Delete(f));
+            ExceptRedir:
+            return Redirect("/Home/Index");
+        }
 
-        
+        // "упаковка" зип-архива
+        [HttpPost]
+        public ActionResult ZipCrutch(string ZipCrutchUpdate)
+        {
+            Response.Redirect("/home/index");
+
+            return View();
+        }
+
+        public string textOnImage { get; set; }// наш будущий текст
 
         [HttpPost]
         public JsonResult Upload()
         {
+            // извлечь строку из TEXTON.txt
+            string path1 = "/TEXTON.txt";
+            using (StreamReader sr = new StreamReader(path1, System.Text.Encoding.Default))
+            {
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    textOnImage = line;
+                }
+            }
 
             string __filepath = Server.MapPath("~/uploads");
             int __maxSize = 2 * 1024 * 1024;    // максимальный размер файла 2 Мб
+
             // допустимые MIME-типы для файлов
             List<string> mimes = new List<string>
             {
@@ -66,10 +104,6 @@ namespace UploadFiles.Controllers
             {
                 Files = new List<string>()
             };
-
-            // текст картинки
-            //string textOnImage = "AAAA";
-            
 
             if (Request.Files.Count > 0)
             {
@@ -96,24 +130,18 @@ namespace UploadFiles.Controllers
                         string path = $@"{__filepath}\{guid}.{file.FileName}";
 
                         // Добавить подпись для картинки и сохранить
-                        TextMark.SetText(file, Aboba, path);
+                        TextMark.SetText(file, textOnImage, path);
 
                         result.Files.Add($"/uploads/{guid}.{file.FileName}");
                     }
                 }
             }
-
-
-
             return Json(result);
         }
     }
-
     public class Result
     {
         public string Error { get; set; }
         public List<string> Files { get; set; }
     }
-
-
 }

@@ -78,8 +78,8 @@ namespace TextImageApp.Controllers
                         break;
                 }
 
-                // Добавляем смещение 5% относительно низа экрана и выравниваем по центру
-                int yPixelsFromBottom = (int)(imageHeight * 0.05);
+                // Добавляем смещение 7% относительно низа экрана и выравниваем по центру
+                int yPixelsFromBottom = (int)(imageHeight * 0.07);
                 float positionY = ((imageHeight -
                             yPixelsFromBottom) - (size.Height / 2));
                 float centerX = (imageWidth / 2);
@@ -98,7 +98,7 @@ namespace TextImageApp.Controllers
 
                 // Полупрозрачная кисть белого цвета для заливки текста
                 SolidBrush brush = new SolidBrush(
-                                Color.FromArgb(153, 255, 255, 255));
+                                Color.FromArgb(195, 255, 255, 255));
 
                 graphics.DrawString(text,
                     font,
